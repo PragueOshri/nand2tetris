@@ -1,0 +1,82 @@
+class Brick {
+
+    field int x, y; // the brick's screen location
+    field int width, height; // the brick's width and height
+    field boolean distroyed;
+
+    constructor Brick new(int Ax, int Ay, int Awidth, int Aheight) {
+        let x = Ax;
+        let y = Ay;
+        let width = Awidth;
+        let height = Aheight;
+        let distroyed = false;
+        do show();
+        return this;
+    }
+
+    /** Deallocates the object's memory. */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Shows the brick. */
+    method void show() {
+        do Screen.setColor(true);
+        do draw();
+        return;
+    }
+
+    /** Hides the brick. */
+    method void hide() {
+        do Screen.setColor(false);
+        do draw();
+        return;
+    }
+
+    /** Draws the brick. */
+    method void draw() {
+        do Screen.drawRectangle(x, y, x + width, y + height);
+        return;
+    }
+
+    method boolean getDistroyed() {
+        return distroyed;
+    }
+
+    method void distroy() {
+        let distroyed = true;
+        return;
+    }
+
+    method int getx() {
+        return x;
+    }
+
+    method int gety() {
+        return y;
+    }
+
+    method int getW() {
+        return width;
+    }
+
+    method int getH() {
+        return height;
+    }
+
+    method int getYval() {
+        return y + height;
+    }
+
+    /** check if the ball get to a brick that not distroyed yet.*/
+    method boolean inBrick(int Bx, int By) {
+        var boolean isIn;
+        let isIn = false;
+        if ((~(distroyed)) & ((~(Bx < x)) & (Bx < (x + width + 1)) & (~(By < y + 1)) & (By < (y + height + 1)))) {
+            do distroy();
+            let isIn = true;
+        }
+        return isIn;
+    }
+}

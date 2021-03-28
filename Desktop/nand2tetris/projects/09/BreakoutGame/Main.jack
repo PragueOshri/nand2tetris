@@ -1,0 +1,14 @@
+/**
+ * The main class of the Breakout game.
+ */
+class Main {
+    /** Initializes a Breakout game and starts running it. */
+    function void main() {
+        var BreakoutGame game;
+        do BreakoutGame.newInstance();
+        let game = BreakoutGame.getInstance();
+        do game.run();
+        do game.dispose();
+        return;
+    }
+}

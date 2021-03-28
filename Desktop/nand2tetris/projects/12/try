@@ -1,0 +1,28 @@
+        var int startx, starty, xindex, yindex, nextx, nexty;
+        var Array chars;
+        do Screen.setColor(true);
+        let startx = cursorRow * 8;
+        let starty = cursorCol * 11;
+        let chars = Output.getMap(c);
+        let yindex = 0;
+        while (yindex < 11) {
+            let xindex = 0;
+            while (xindex < 8) {
+                if ((twoToThe[xindex] & chars[yindex]) = 1) {
+                    do Screen.drawPixel(startx + xindex, starty);
+                }
+                let xindex = xindex + 1;
+            }
+            let yindex = yindex + 1;
+            let starty = starty + 1;
+        }
+        let nextx = cursorCol + 1;
+        if (nextx > (width-1)) {
+            let nextx = 0;
+            let nexty = cursorRow + 1;
+            if (nexty > (height-1)) {
+                let nexty = 0;
+            }
+        }
+        do Output.moveCursor(nexty, nextx);
+        //do Output.printCharHelper(c, true);

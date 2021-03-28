@@ -1,0 +1,86 @@
+class Bricks {
+
+    field int brick_level;
+    field Brick brick_3A;
+    field Brick brick_3B;
+    field Brick brick_3C;
+    field Brick brick_3D;
+    field Brick brick_3E;
+    field Brick brick_2A;
+    field Brick brick_2B;
+    field Brick brick_2C;
+    field Brick brick_2D;
+    field Brick brick_2E;
+    field Brick brick_1A;
+    field Brick brick_1B;
+    field Brick brick_1C;
+    field Brick brick_1D;
+    field Brick brick_1E;
+
+    field int num_bricks;
+    field Array bricks;
+    field boolean inBrick;
+    field int y_val_brick;
+
+    constructor Bricks new() {
+        let brick_3A = Brick.new(0, 0, 100, 10);
+        let brick_3B = Brick.new(103, 0, 100, 10);
+        let brick_3C = Brick.new(206, 0, 100, 10);
+        let brick_3D = Brick.new(309, 0, 100, 10);
+        let brick_3E = Brick.new(412, 0, 99, 10);
+        let brick_2A = Brick.new(0, 14, 100, 10);
+        let brick_2B = Brick.new(103, 14, 100, 10);
+        let brick_2C = Brick.new(206, 14, 100, 10);
+        let brick_2D = Brick.new(309, 14, 100, 10);
+        let brick_2E = Brick.new(412, 14, 99, 10);
+        let brick_1A = Brick.new(0, 28, 100, 10);
+        let brick_1B = Brick.new(103, 28, 100, 10);
+        let brick_1C = Brick.new(206, 28, 100, 10);
+        let brick_1D = Brick.new(309, 28, 100, 10);
+        let brick_1E = Brick.new(412, 28, 99, 10);
+
+        let num_bricks = 15;
+        let bricks = Array.new(num_bricks);
+        let bricks[0] = brick_3A;
+        let bricks[1] = brick_3B;
+        let bricks[2] = brick_3C;
+        let bricks[3] = brick_3D;
+        let bricks[4] = brick_3E;
+        let bricks[5] = brick_2A;
+        let bricks[6] = brick_2B;
+        let bricks[7] = brick_2C;
+        let bricks[8] = brick_2D;
+        let bricks[9] = brick_2E;
+        let bricks[10] = brick_1A;
+        let bricks[11] = brick_1B;
+        let bricks[12] = brick_1C;
+        let bricks[13] = brick_1D;
+        let bricks[14] = brick_1E;
+        let y_val_brick = 0;
+        return this;
+    }
+
+    /** checks if the ball hit a brick in bricks.*/
+    method boolean hitBrick(int Bx, int By) {
+        var Brick b;
+        var boolean isHit;
+        var int i;
+        let i = 0;
+        let isHit = false;
+
+        while ((~isHit) & (i < num_bricks)) {
+            let b = bricks[i];
+            let isHit = b.inBrick(Bx, By);
+            if (isHit) {
+                let y_val_brick = b.getYval();
+                do b.hide();
+            }
+            let i = i + 1;
+        }
+        return isHit;
+    }
+
+    method int getHeightBrick() {
+        return y_val_brick;
+    }
+}

@@ -1,0 +1,380 @@
+class Ball {
+
+    field int x, y;               // the ball's screen location (in pixels)
+    field int lengthx, lengthy;   // distance of last destination (in pixels)
+
+    field int d, straightD, diagonalD;            // used for straight line movement computation
+    field boolean invert, positivex, positivey;   // (same)
+
+    field int leftWall, rightWall, topWall, bottomWall;  // wall locations
+
+    field int wall;   // last wall that the ball was bounced off of
+    field Bricks bricks;
+
+    field int brick_level;
+    field int num_of_hits;
+    field Brick brick_3A;
+    field Brick brick_3B;
+    field Brick brick_3C;
+    field Brick brick_3D;
+    field Brick brick_3E;
+    field Brick brick_2A;
+    field Brick brick_2B;
+    field Brick brick_2C;
+    field Brick brick_2D;
+    field Brick brick_2E;
+    field Brick brick_1A;
+    field Brick brick_1B;
+    field Brick brick_1C;
+    field Brick brick_1D;
+    field Brick brick_1E;
+
+    /** Constructs a new ball with the given initial location and wall locations. */
+    constructor Ball new(int Ax, int Ay,
+                         int AleftWall, int ArightWall, int AtopWall, int AbottomWall) {
+        let x = Ax;
+        let y = Ay;
+        let leftWall = AleftWall;
+        let rightWall = ArightWall - 6;    // -6 for ball size
+        let topWall = AtopWall;
+        let bottomWall = AbottomWall - 6;  // -6 for ball size
+        let wall = 0;
+        let bricks = Bricks.new();
+        let num_of_hits = 0;
+        let brick_level = 0;
+        let brick_3A = Brick.new(0, 0, 100, 10);
+        let brick_3B = Brick.new(103, 0, 100, 10);
+        let brick_3C = Brick.new(206, 0, 100, 10);
+        let brick_3D = Brick.new(309, 0, 100, 10);
+        let brick_3E = Brick.new(412, 0, 99, 10);
+        let brick_2A = Brick.new(0, 14, 100, 10);
+        let brick_2B = Brick.new(103, 14, 100, 10);
+        let brick_2C = Brick.new(206, 14, 100, 10);
+        let brick_2D = Brick.new(309, 14, 100, 10);
+        let brick_2E = Brick.new(412, 14, 99, 10);
+        let brick_1A = Brick.new(0, 28, 100, 10);
+        let brick_1B = Brick.new(103, 28, 100, 10);
+        let brick_1C = Brick.new(206, 28, 100, 10);
+        let brick_1D = Brick.new(309, 28, 100, 10);
+        let brick_1E = Brick.new(412, 28, 99, 10);
+        do show();
+        return this;
+    }
+
+    /** Deallocates the Ball's memory. */
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    /** Shows the ball. */
+    method void show() {
+        do Screen.setColor(true);
+        do draw();
+        return;
+    }
+
+    /** Hides the ball. */
+    method void hide() {
+        do Screen.setColor(false);
+        do draw();
+        return;
+    }
+
+    /** Draws the ball. */
+    method void draw() {
+        do Screen.drawRectangle(x, y, x + 5, y + 5);
+        return;
+    }
+
+    /** Returns the ball's left edge. */
+    method int getLeft() {
+        return x;
+    }
+
+    /** Returns the ball's right edge. */
+    method int getRight() {
+        return x + 5;
+    }
+
+    /** Return the number of bricks that the ball hits. */
+    method int getNumOfHits() {
+        return num_of_hits;
+    }
+
+    /** Computes and sets the ball's destination. */
+    method void setDestination(int destx, int desty) {
+        var int dx, dy, temp;
+        let lengthx = destx - x;
+        let lengthy = desty - y;
+        let dx = Math.abs(lengthx);
+        let dy = Math.abs(lengthy);
+        let invert = (dx < dy);
+
+        if (invert) {
+            let temp = dx; // swap dx, dy
+            let dx = dy;
+            let dy = temp;
+            let positivex = (y < desty);
+            let positivey = (x < destx);
+        }
+        else {
+            let positivex = (x < destx);
+            let positivey = (y < desty);
+        }
+
+        let d = (2 * dy) - dx;
+        let straightD = 2 * dy;
+        let diagonalD = 2 * (dy - dx);
+
+        return;
+    }
+
+    /**
+     * Moves the ball one unit towards its destination.
+     * If the ball has reached a wall, returns 0.
+     * Else, returns a value according to the wall:
+     * 1 (left wall), 2 (right wall), 3 (top wall), 4 (bottom wall).
+     */
+    method int move() {
+        var boolean hitBrick;
+        do hide();
+
+        if (d < 0) { let d = d + straightD; }
+        else {
+            let d = d + diagonalD;
+
+            if (positivey) {
+                if (invert) { let x = x + 4; }
+                else { let y = y + 4; }
+            }
+            else {
+                if (invert) { let x = x - 4; }
+                else { let y = y - 4; }
+            }
+        }
+
+        if (positivex) {
+            if (invert) { let y = y + 4; }
+            else { let x = x + 4; }
+        }
+        else {
+            if (invert) { let y = y - 4; }
+            else { let x = x - 4; }
+        }
+
+        if (~(x > leftWall)) {
+            let wall = 1;
+            let x = leftWall;
+        }
+        if (~(x < rightWall)) {
+            let wall = 2;
+            let x = rightWall;
+        }
+
+        if (bri)
+        if (~(y > topWall)) {
+            let wall = 3;
+            let y = topWall;
+        }
+        if (~(y < bottomWall)) {
+            let wall = 4;
+            let y = bottomWall;
+        }
+
+        do show();
+
+        return wall;
+    }
+
+    /**
+     * Bounces off the current wall: sets the new destination
+     * of the ball according to the ball's angle and the given
+     * bouncing direction (-1/0/1=left/center/right or up/center/down).
+     */
+    method void bounce(int bouncingDirection) {
+        var int newx, newy, divLengthx, divLengthy, factor;
+
+        // dividing by 10 first since results are too big
+        let divLengthx = lengthx / 10;
+        let divLengthy = lengthy / 10;
+        if (bouncingDirection = 0) { let factor = 10; }
+        else {
+            if (((~(lengthx < 0)) & (bouncingDirection = 1)) | ((lengthx < 0) & (bouncingDirection = (-1)))) {
+                let factor = 20; // bounce direction is in ball direction
+            }
+            else { let factor = 5; } // bounce direction is against ball direction
+        }
+
+        if (wall = 1) {
+            let newx = 506;
+            let newy = (divLengthy * (-50)) / divLengthx;
+            let newy = y + (newy * factor);
+        }
+        else {
+            if (wall = 2) {
+                let newx = 0;
+                let newy = (divLengthy * 50) / divLengthx;
+                let newy = y + (newy * factor);
+            }
+            else {
+                if (brick_level = 3) {
+                    let newy = 250;
+                    let newx = (divLengthx * (-25)) / divLengthy;
+                    let newx = x + (newx * factor);
+                }
+                if (brick_level = 2) {
+                    let newy = 250;
+                    let newx = (divLengthx * (-25)) / divLengthy;
+                    let newx = x + (newx * factor);
+                }
+                if (brick_level = 1) {
+                    let newy = 250;
+                    let newx = (divLengthx * (-25)) / divLengthy;
+                    let newx = x + (newx * factor);
+                }
+                if ((~(brick_level = 3)) &
+                    (~(brick_level = 2)) &
+                    (~(brick_level = 1)) &
+                    (wall = 3)) {
+                    let newy = 250;
+                    let newx = (divLengthx * (-25)) / divLengthy;
+                    let newx = x + (newx * factor);
+                }
+                else { // assumes wall = 4
+                    let newy = 0;
+                    let newx = (divLengthx * 25) / divLengthy;
+                    let newx = x + (newx * factor);
+                }
+            }
+        }
+
+        do setDestination(newx, newy);
+        return;
+    }
+}
+
+        // first level of bricks
+
+        let hitBrick = (~(brick_1A.getDistroyed()) & (x < 100));
+        if (~(y > 38) & hitBrick) {
+            do brick_1A.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_1A.hide();
+            let brick_level = 1;
+            let y = 38;
+        }
+        let hitBrick = (~(brick_1B.getDistroyed()) & (x < 204) & (x > 102));
+        if (~(y > 38) & hitBrick) {
+            do brick_1B.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_1B.hide();
+            let brick_level = 1;
+            let y = 38;
+        }
+        let hitBrick = (~(brick_1C.getDistroyed()) & (x < 307) & (x > 205));
+        if (~(y > 38) & hitBrick) {
+            do brick_1C.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_1C.hide();
+            let brick_level = 1;
+            let y = 38;
+        }
+        let hitBrick = (~(brick_1D.getDistroyed()) & (x < 410) & (x > 308));
+        if (~(y > 38) & hitBrick) {
+            do brick_1D.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_1D.hide();
+            let brick_level = 1;
+            let y = 38;
+        }
+        let hitBrick = (~(brick_1E.getDistroyed()) & (x > 411));
+        if (~(y > 38) & hitBrick) {
+            do brick_1E.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_1E.hide();
+            let brick_level = 1;
+            let y = 38;
+        }
+        // second level of bricks
+        let hitBrick = (~(brick_2A.getDistroyed()) & (x < 100));
+        if (~(y > 24) & hitBrick) {
+            do brick_2A.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_2A.hide();
+            let brick_level = 1;
+            let y = 24;
+        }
+        let hitBrick = (~(brick_2B.getDistroyed()) & (x < 204) & (x > 102));
+        if (~(y > 24) & hitBrick) {
+            do brick_2B.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_2B.hide();
+            let brick_level = 1;
+            let y = 24;
+        }
+        let hitBrick = (~(brick_2C.getDistroyed()) & (x < 307) & (x > 205));
+        if (~(y > 24) & hitBrick) {
+            do brick_2C.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_2C.hide();
+            let brick_level = 1;
+            let y = 24;
+        }
+        let hitBrick = (~(brick_2D.getDistroyed()) & (x < 410) & (x > 308));
+        if (~(y > 24) & hitBrick) {
+            do brick_2D.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_2D.hide();
+            let brick_level = 1;
+            let y = 24;
+        }
+        let hitBrick = (~(brick_2E.getDistroyed()) & (x > 411));
+        if (~(y > 24) & hitBrick) {
+            do brick_2E.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_2E.hide();
+            let brick_level = 1;
+            let y = 24;
+        }
+        // third level of bricks
+        let hitBrick = (~(brick_3A.getDistroyed()) & (x < 100));
+        if (~(y > 10) & hitBrick) {
+            do brick_3A.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_3A.hide();
+            let brick_level = 1;
+            let y = 10;
+        }
+        let hitBrick = (~(brick_3B.getDistroyed()) & (x < 204) & (x > 102));
+        if (~(y > 10) & hitBrick) {
+            do brick_3B.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_3B.hide();
+            let brick_level = 1;
+            let y = 10;
+        }
+        let hitBrick = (~(brick_3C.getDistroyed()) & (x < 307) & (x > 205));
+        if (~(y > 10) & hitBrick) {
+            do brick_3C.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_3C.hide();
+            let brick_level = 1;
+            let y = 10;
+        }
+        let hitBrick = (~(brick_3D.getDistroyed()) & (x < 410) & (x > 308));
+        if (~(y > 10) & hitBrick) {
+            do brick_3D.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_3D.hide();
+            let brick_level = 1;
+            let y = 10;
+        }
+        let hitBrick = (~(brick_3E.getDistroyed()) & (x > 411));
+        if (~(y > 10) & hitBrick) {
+            do brick_3E.distroy();
+            let num_of_hits = num_of_hits + 1;
+            do brick_3E.hide();
+            let brick_level = 1;
+            let y = 10;
+        }
